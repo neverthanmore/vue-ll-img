@@ -1,0 +1,42 @@
+{
+  "name": "vue-ll-img",
+  "version": "0.1.0",
+  "description": "vue lazyLoad plugin",
+  "main": "dist/lazyLoad.js",
+  "module": "index.js",
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.15.1",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.16.4",
+    "rollup": "^1.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neverthanmore/vue-ll-img.git"
+  },
+  "keywords": [
+    "vue",
+    "lazyload",
+    "image"
+  ],
+  "files": [
+    "core",
+    "types",
+    "utils",
+    "dist",
+    "index.js"
+  ],
+  "typings": "types/index.d.ts",
+  "author": "gbbacy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neverthanmore/vue-ll-img/issues"
+  },
+  "homepage": "https://github.com/neverthanmore/vue-ll-img#readme",
+  "dependencies": {}
+}
