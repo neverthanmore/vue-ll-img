@@ -1,6 +1,4 @@
-import LazyClass from './core/lazy';
-const a =
-  'sadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsad, sadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsadsadsadsadasdsadasdsad';
+// import LazyClass from './core/lazy';
 export default {
   install() {}
 };
