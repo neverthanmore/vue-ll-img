@@ -10,6 +10,7 @@
     "@babel/preset-env": "^7.3.4",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "eslint": "^5.15.1",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
@@ -24,8 +25,8 @@
     "vue": "^2.6.8"
   },
   "scripts": {
-    "build": "rollup --config ./build/rollup.config.js",
-    "test": "jest --config=jest.config.js"
+    "build": "BABEL_ENV=rollup rollup --config ./build/rollup.config.js",
+    "test": "BABEL_ENV=test jest --config=jest.config.js --no-cache"
   },
   "repository": {
     "type": "git",
