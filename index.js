@@ -1,4 +1,5 @@
-// import LazyClass from './core/lazyClass';
+import LazyClass from './core/lazyClass';
+
 export default {
   install(Vue, options = {}) {
     const isVue2 = Vue.version.slice(0, 1) === 2;
@@ -8,6 +9,13 @@ export default {
       return;
     }
 
-    Vue.directive('lazy-img', {});
+    const lazyLoad = new LazyClass(Vue, options);
+    Vue.prototype.$lazyLoad = lazyLoad;
+    Vue.directive('lazy-img', {
+      bind: lazyLoad.addListener.bind(lazyLoad),
+      update: lazyLoad.updateListener.bind(lazyLoad),
+      componentUpdated: lazyLoad.lazyEventHandle.bind(lazyLoad),
+      unbind: lazyLoad.removeListener.bind(lazyLoad)
+    });
   }
 };
