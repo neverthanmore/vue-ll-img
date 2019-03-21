@@ -3,6 +3,7 @@ import throttle from '../utils/throttle';
 import supportIntersectionObserver from '../utils/supportIntersectionObserver';
 import assign from '../utils/assign';
 import eventBind from '../utils/eventBind';
+import remove from '../utils/remove';
 import ReactiveListener from './reactiveListener';
 
 const IN_BROWSER = typeof window !== 'undefined';
@@ -30,25 +31,43 @@ class LazyClass extends Emitter {
     };
     this._events['loaded'] = [];
     this.lazyEventHandle = throttle(this._lazyEventHandle.bind(this), throttleWait || 200);
-    this.initMode();
+    this.initObserverMode();
   }
-
-  /**
-   *
-   */
-  _lazyEventHandle() {}
 
   /**
    * if support IntersectionObserver, use it
    */
-  initMode() {
+  initObserverMode() {
     if (supportIntersectionObserver) {
       this._observer = new IntersectionObserver(this._observerHandler.bind(this), this.options.observerOptions);
     }
   }
 
+  _observerHandler(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const listener = this.listenerQueue.find(listener => listener.el === entry.target);
+        if (listener.state === 'loaded') return this._observer.unobserve(listener.el);
+        listener.load();
+      }
+    });
+  }
+
+  /**
+   * check el if in view
+   */
+  _lazyEventHandle() {
+    const delList = [];
+    this.listenerQueue.forEach(listener => {
+      if (listener.state !== 'loading') return delList.push(listener);
+      if (listener.checkInView()) return listener.load();
+    });
+    delList.forEach(vm => remove(this.listenerQueue, vm));
+  }
+
   addListener(el, binding, vnode) {
     if (this.elInQueue(el)) {
+      this.updateListener(el, binding, vode);
       return;
     }
 
@@ -71,22 +90,61 @@ class LazyClass extends Emitter {
       }
       const reactiveListener = new ReactiveListener({
         imgStateSrc: { loaded, loading, error },
-        preLoad: this.options.preLoad
+        preLoad: this.options.preLoad,
+        el,
+        $parent
       });
       this.listenerQueue.push(reactiveListener);
       // add event listener target
       this._observer && this._observer.observe(el);
-      IN_BROWSER && this.addToScrollertQueue([window, $parent]);
+      IN_BROWSER && this.addToScrollerQueue([window, $parent]);
 
       Vue.$nextTick(this.lazyEventHandle.bind(this));
     });
   }
 
-  updateListener(el, binding, vnode) {}
+  updateListener(el, binding, vnode) {
+    const { loaded, loading, error } = this.valueFormatter(binding.value);
 
-  removeListener(el) {}
+    const exist = find(this.listenerQueue, item => item.el === el);
+    if (exist) {
+      exist.update({ loaded, loading, error });
+      exist.initState();
+      if (this._observer) {
+        this._observer.unobserve(el);
+        this._observer.observe(el);
+      }
+      Vue.nextTick(() => this.lazyLoadHandler());
+    } else {
+      this.addListener(el, binding, vnode);
+    }
+  }
 
-  addToScrollertQueue(parent) {
+  removeListener(el) {
+    if (!el) return;
+    this._observer && this._observer.unobserve(el);
+    const existItem = find(this.listenerQueue, item => item.el === el);
+    if (existItem) {
+      this._removeListenerTarget(existItem.$parent);
+      this._removeListenerTarget(window);
+      remove(this.listenerQueue, existItem) && existItem.destroy();
+    }
+  }
+
+  _removeListenerTarget(el) {
+    this.scrollerElementQueue.forEach((target, index) => {
+      if (target.el === el) {
+        target.childrenCount--;
+        if (!target.childrenCount) {
+          this.bindLazyEvent(target.el, false);
+          this.scrollerElementQueue.splice(index, 1);
+          target = null;
+        }
+      }
+    });
+  }
+
+  addToScrollerQueue(parent) {
     if (!parent) return;
     let els = Array.isArray(parent) ? parent : [parent];
 
