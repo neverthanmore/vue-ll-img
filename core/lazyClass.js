@@ -72,7 +72,6 @@ class LazyClass extends Emitter {
     }
 
     const { loaded, loading, error } = this.valueFormatter(binding.value);
-    el.setAttribute('lazy', 'loading');
     this.vue.$nextTick(() => {
       let container = binding.arg;
       let $parent, $parentDom;
@@ -109,7 +108,6 @@ class LazyClass extends Emitter {
     const exist = find(this.listenerQueue, item => item.el === el);
     if (exist) {
       exist.update({ loaded, loading, error });
-      exist.initState();
       if (this._observer) {
         this._observer.unobserve(el);
         this._observer.observe(el);
