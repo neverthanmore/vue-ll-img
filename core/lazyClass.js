@@ -5,6 +5,7 @@ import assign from '../utils/assign';
 import eventBind from '../utils/eventBind';
 import remove from '../utils/remove';
 import ReactiveListener from './reactiveListener';
+import getScrollerParent from '../utils/getScrollerParent';
 
 const IN_BROWSER = typeof window !== 'undefined';
 const DEFAULT_OBSERVER_OPTIONS = {
@@ -67,7 +68,7 @@ class LazyClass extends Emitter {
 
   addListener(el, binding, vnode) {
     if (this.elInQueue(el)) {
-      this.updateListener(el, binding, vode);
+      this.updateListener(el, binding, vnode);
       return;
     }
 
@@ -98,7 +99,7 @@ class LazyClass extends Emitter {
       this._observer && this._observer.observe(el);
       IN_BROWSER && this.addToScrollerQueue([window, $parent]);
 
-      Vue.$nextTick(this.lazyEventHandle.bind(this));
+      this.vue.$nextTick(this.lazyEventHandle.bind(this));
     });
   }
 
@@ -112,7 +113,7 @@ class LazyClass extends Emitter {
         this._observer.unobserve(el);
         this._observer.observe(el);
       }
-      Vue.nextTick(() => this.lazyLoadHandler());
+      this.vue.nextTick(() => this.lazyLoadHandler());
     } else {
       this.addListener(el, binding, vnode);
     }
