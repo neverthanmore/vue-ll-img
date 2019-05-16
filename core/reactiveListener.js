@@ -58,7 +58,7 @@ class ReactiveListener {
     this.performance.start = Date.now();
     image.onload = () => {
       this.render('loaded');
-      imageCache[img.src] = 1;
+      imgCache[img.src] = 1;
       this.performance.end = Date.now();
     };
     image.onerror = e => {
