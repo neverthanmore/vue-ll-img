@@ -48,8 +48,10 @@ class LazyClass extends Emitter {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const listener = this.listenerQueue.find(listener => listener.el === entry.target);
-        if (listener.state === 'loaded') return this._observer.unobserve(listener.el);
-        listener.load();
+        if (listener) {
+          if (listener.state === 'loaded') return this._observer.unobserve(listener.el);
+          listener.load();
+        }
       }
     });
   }
@@ -73,21 +75,17 @@ class LazyClass extends Emitter {
     }
 
     const { loaded, loading, error } = this.valueFormatter(binding.value);
-    this.vue.$nextTick(() => {
+    this.vue.nextTick(() => {
       let container = binding.arg;
       let $parent, $parentDom;
       // support refs && id
       if (container) {
         $parent = vnode.context.$refs[container];
         $parentDom = document.getElementById(container);
-        /* prettier-ignore */
-        $parent = $parent
-          ? $parent.$el
-          : $parentDom
-            ? $parentDom
-            : getScrollerParent(el);
-        /* prettier-ignore */
+        $parent = $parent ? $parent.$el || $parent : $parentDom;
       }
+      if (!$parent) $parent = getScrollerParent(el);
+
       const reactiveListener = new ReactiveListener({
         imgStateSrc: { loaded, loading, error },
         preLoad: this.options.preLoad,
@@ -97,16 +95,16 @@ class LazyClass extends Emitter {
       this.listenerQueue.push(reactiveListener);
       // add event listener target
       this._observer && this._observer.observe(el);
-      IN_BROWSER && this.addToScrollerQueue([window, $parent]);
-
-      this.vue.$nextTick(this.lazyEventHandle.bind(this));
+      if (IN_BROWSER) {
+        this.addToScrollerQueue($parent === window ? window : [window, $parent]);
+      }
+      this.vue.nextTick(this.lazyEventHandle.bind(this));
     });
   }
 
   updateListener(el, binding, vnode) {
     const { loaded, loading, error } = this.valueFormatter(binding.value);
-
-    const exist = find(this.listenerQueue, item => item.el === el);
+    const exist = this.find(el);
     if (exist) {
       exist.update({ loaded, loading, error });
       if (this._observer) {
@@ -122,7 +120,7 @@ class LazyClass extends Emitter {
   removeListener(el) {
     if (!el) return;
     this._observer && this._observer.unobserve(el);
-    const existItem = find(this.listenerQueue, item => item.el === el);
+    const existItem = this.find(el);
     if (existItem) {
       this._removeListenerTarget(existItem.$parent);
       this._removeListenerTarget(window);
@@ -133,8 +131,8 @@ class LazyClass extends Emitter {
   _removeListenerTarget(el) {
     this.scrollerElementQueue.forEach((target, index) => {
       if (target.el === el) {
-        target.childrenCount--;
-        if (!target.childrenCount) {
+        target.childCount--;
+        if (!target.childCount) {
           this.bindLazyEvent(target.el, false);
           this.scrollerElementQueue.splice(index, 1);
           target = null;
@@ -162,8 +160,12 @@ class LazyClass extends Emitter {
     });
   }
 
-  bindLazyEvent(el, binding) {
+  bindLazyEvent(el, binding = true) {
     this.options.listenEventTypes.forEach(evt => eventBind[binding ? 'on' : 'off'](el, evt, this.lazyEventHandle));
+  }
+
+  find(el) {
+    return this.listenerQueue.find(item => item.el === el);
   }
 
   elInQueue(el) {

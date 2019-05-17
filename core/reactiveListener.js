@@ -27,7 +27,7 @@ class ReactiveListener {
     this.el.setAttribute('src', this.img[state]);
   }
 
-  checkInview() {
+  checkInView() {
     const rect = this.el.getBoundingClientRect();
     const preLoad = this.preLoad;
     return (
@@ -54,14 +54,15 @@ class ReactiveListener {
     }
 
     let image = new Image();
-    image.src = img.src;
+    image.src = img.loaded;
     this.performance.start = Date.now();
     image.onload = () => {
       this.render('loaded');
-      imgCache[img.src] = 1;
+      imgCache[img.loaded] = 1;
       this.performance.end = Date.now();
     };
     image.onerror = e => {
+      console.error(e);
       this.render('error');
     };
   }
