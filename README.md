@@ -33,6 +33,14 @@ Vue.use({
 
 
 
+| key              | description                    | default                                                      | options |
+| ---------------- | ------------------------------ | ------------------------------------------------------------ | ------- |
+| preload          | 预加载高度                     | 1.3                                                          | Number  |
+| loading          | loading图                      |                                                              | String  |
+| Error            | 图片加载失败图                 |                                                              | String  |
+| observerOptions  | IntersectionObserver's options | { rootMargin: '0px', threshold: 0.1 }                        | Object  |
+| listenEventTypes | 监听的事件                     | ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend', 'touchmove'] | Array   |
+
 template
 
 ```html
