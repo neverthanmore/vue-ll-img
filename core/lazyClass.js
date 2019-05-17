@@ -30,6 +30,7 @@ class LazyClass extends Emitter {
       observerOptions: observerOptions || DEFAULT_OBSERVER_OPTIONS,
       listenEventTypes: listenEventTypes || DEFAULT_EVENTS
     };
+    // Todo event hooks
     this._events['loaded'] = [];
     this.lazyEventHandle = throttle(this._lazyEventHandle.bind(this), throttleWait || 200);
     this.initObserverMode();
