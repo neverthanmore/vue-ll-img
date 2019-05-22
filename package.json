@@ -1,6 +1,6 @@
 {
   "name": "@kaola-mkt/vue-ll-img",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "vue lazyLoad plugin",
   "main": "dist/lazyLoad.js",
   "module": "index.js",

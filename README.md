@@ -25,7 +25,7 @@ main.js or plugin.js
 import Vue from 'vue'
 import lazy from '@kaola-mkt/vue-ll-img'
 
-Vue.use({
+Vue.use(lazy, {
     loading: 'haitao.nos.com/loading.png',
     error: 'haitao.nos.com/error.png'
 })
