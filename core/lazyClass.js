@@ -112,7 +112,7 @@ class LazyClass extends Emitter {
         this._observer.unobserve(el);
         this._observer.observe(el);
       }
-      this.vue.nextTick(() => this.lazyLoadHandler());
+      this.vue.nextTick(() => this.lazyEventHandle());
     } else {
       this.addListener(el, binding, vnode);
     }

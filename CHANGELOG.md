@@ -1,3 +1,7 @@
+# 0.1.7
+
+修复 dom 更新初始化 lazyEventHandle
+
 # 0.1.6
 
 更新文档
