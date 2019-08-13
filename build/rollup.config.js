@@ -25,8 +25,7 @@ export default {
       }
     }),
     babel({
-      runtimeHelpers: true,
-      externalHelpers: true
+      runtimeHelpers: true
     }),
     replace({
       VUE_LL_VERSION: JSON.stringify(version)
