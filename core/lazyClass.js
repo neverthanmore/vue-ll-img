@@ -78,6 +78,7 @@ class LazyClass extends Emitter {
     const { loaded, loading, error } = this.valueFormatter(binding.value);
     this.vue.nextTick(() => {
       let container = binding.arg;
+      let modifiers = binding.modifiers;
       let $parent, $parentDom;
       // support refs && id
       if (container) {
@@ -91,7 +92,8 @@ class LazyClass extends Emitter {
         imgStateSrc: { loaded, loading, error },
         preLoad: this.options.preLoad,
         el,
-        $parent
+        $parent,
+        bindingType: Object.keys(binding.modifiers)[0]
       });
       this.listenerQueue.push(reactiveListener);
       // add event listener target

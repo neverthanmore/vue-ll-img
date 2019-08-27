@@ -49,6 +49,10 @@ template
 </div>
 ```
 
+```html
+<div v-lazy-img.background-image="aaa.png"></div>
+```
+
 
 
 如果没有设置滚动的元素，会为每一个listener去寻找滚动的父元素。

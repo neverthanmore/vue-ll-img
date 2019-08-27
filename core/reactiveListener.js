@@ -1,10 +1,11 @@
 const imgCache = {};
 class ReactiveListener {
-  constructor({ imgStateSrc, preLoad, el, $parent }) {
+  constructor({ imgStateSrc, preLoad, el, $parent, bindingType }) {
     this.img = imgStateSrc;
     this.preLoad = preLoad;
     this.el = el;
     this.$parent = $parent;
+    this.bindingType = bindingType;
 
     this.performance = {
       init: Date.now(),
@@ -22,9 +23,15 @@ class ReactiveListener {
   }
 
   render(state) {
+    const { el, bindingType } = this;
+    const img = this.img[state];
     this.state = state;
-    this.el.setAttribute('lazy', state);
-    this.el.setAttribute('src', this.img[state]);
+    el.setAttribute('lazy', state);
+    if (bindingType) {
+      el.style[bindingType] = `url("${img}")`;
+    } else {
+      el.setAttribute('src', img);
+    }
   }
 
   checkInView() {
