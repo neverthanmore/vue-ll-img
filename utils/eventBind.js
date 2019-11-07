@@ -18,7 +18,7 @@ const eventBind = {
     el.addEventListener(type, func, supportPassive ? { passive: true, capture } : capture);
   },
 
-  off(el, ...args) {
+  off(el, type, ...args) {
     el.removeEventListener(type, ...args);
   }
 };
